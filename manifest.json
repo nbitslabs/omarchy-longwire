@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "nbitslabs.longwire",
+  "name": "longwire",
+  "version": "1.0.0",
+  "author": "nbitslabs",
+  "license": "MIT",
+  "description": "longwire connection status, pairing code, and shared models in the Omarchy bar.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "longwire",
+    "description": "See whether this machine is on your longwire, add it to your account in one click, and browse the models it shares.",
+    "category": "Network",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
