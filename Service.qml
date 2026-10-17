@@ -71,7 +71,7 @@ Item {
     // without it, fall back to longwire's own installer.
     Quickshell.execDetached(["bash", "-c",
       "if command -v omarchy-install-ai-longwire >/dev/null; then cmd=omarchy-install-ai-longwire; "
-      + "else cmd='curl -fsSL https://longwire.ai/install.sh | sh'; fi; "
+      + "else cmd='f=$(mktemp) && curl -fsSL --connect-timeout 15 --max-time 120 --retry 2 -o $f https://longwire.ai/install.sh && sh $f; s=$?; rm -f $f; (exit $s)'; fi; "
       + "exec omarchy-launch-floating-terminal-with-presentation \"$cmd\""])
   }
 
