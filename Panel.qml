@@ -26,7 +26,7 @@ Panel {
   readonly property color accent: Commons.Color.accent
   readonly property color dim: Qt.darker(foreground, 1.55)
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
-  readonly property var actions: Model.actions(longwire.state, longwire.status)
+  readonly property var actions: Model.actions(longwire.state, longwire.status, longwire.pinnedVersion)
   readonly property bool live: Model.isLive(longwire.state)
   readonly property bool attention: Model.needsAttention(longwire.state)
   readonly property bool paired: Model.machineName(longwire.status) !== ""
@@ -58,7 +58,7 @@ Panel {
     longwire.run(actions[index].id)
     // Leaving for the browser: get out of the way.
     var id = actions[index].id
-    if (id === "openPairing" || id === "openChat" || id === "openDashboard" || id === "install") root.close()
+    if (id === "openPairing" || id === "openChat" || id === "openDashboard" || id === "install" || id === "update") root.close()
   }
 
   Service {

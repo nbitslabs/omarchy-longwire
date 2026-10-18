@@ -1,0 +1,9 @@
+{
+  "version": "9e80787",
+  "server": "https://longwire.ai",
+  "download_base": "https://longwire.ai/downloads",
+  "sha256": {
+    "longwire_linux_amd64": "cc7055c25af7c93106b7ff5c70a56b38bba94e0744af7a5e7a4e9cdb3fc4c949",
+    "longwire_linux_arm64": "092d3c98b443c3e613e0f253295e4128fd53c1ee0fe7bf4b3c1c742d67e2162d"
+  }
+}

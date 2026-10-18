@@ -14,15 +14,26 @@ The packet dot in the middle of the mark is the status light: accent when connec
 
 ## Install
 
-On Omarchy, **Install › AI › longwire** (or `omarchy-install-ai-longwire`) installs the longwire daemon and this widget together, then opens the browser to add the machine.
-
-To add just the widget:
-
 ```
 omarchy plugin add https://github.com/nbitslabs/omarchy-longwire.git --enable
 ```
 
-and install the daemon with `curl -fsSL https://longwire.ai/install.sh | sh`.
+If the longwire daemon isn't on this machine yet, the widget offers **Install longwire**. That runs [`install-longwire.sh`](install-longwire.sh) from this plugin in a terminal, which:
+
+1. downloads the exact longwire release pinned in [`release.json`](release.json) from `https://longwire.ai/downloads/<version>/`,
+2. checks it against the SHA-256 pinned there, and installs nothing if it doesn't match,
+3. installs it to `~/.local/bin/longwire` and starts it as a systemd user service, with self-update turned off,
+4. opens the browser to add the machine to your account.
+
+So what runs on your machine is the release this plugin version was reviewed with, not whatever the server is serving that day. New longwire releases arrive as plugin updates that move the pin; after `omarchy plugin update`, the widget offers **Update longwire**, which runs the same script.
+
+Every longwire release is also published with a signed `SHA256SUMS` alongside the binaries, so you can check a pin yourself:
+
+```
+curl -fsSL https://longwire.ai/downloads/$(jq -r .version release.json)/SHA256SUMS
+```
+
+To pair with a self-hosted longwire instead, set `LONGWIRE_SERVER=https://your-server` when running `install-longwire.sh`.
 
 ## Using it
 

@@ -126,9 +126,25 @@ function engineSummary(status) {
   return n + (n === 1 ? " model" : " models") + " · " + kinds.join(", ")
 }
 
+// The release this plugin installs is pinned in release.json, and installs
+// made by the plugin turn self-update off, so a newer pin is how such a
+// daemon gets updated. Daemons that update themselves are left alone.
+function updateAvailable(status, pinnedVersion) {
+  if (!status || !pinnedVersion || status.auto_update !== false) return false
+  var v = String(status.version || "")
+  return v !== "" && v !== "dev" && v !== String(pinnedVersion)
+}
+
 // The panel's actionable rows for a state, in display order. Each row is
 // { id, icon, title, subtitle }; the panel maps ids to service calls.
-function actions(state, status) {
+function actions(state, status, pinnedVersion) {
+  var rows = stateActions(state, status)
+  if (state !== "notInstalled" && updateAvailable(status, pinnedVersion))
+    rows.push({ id: "update", icon: "󰚰", title: "Update longwire", subtitle: String(status.version) + " → " + pinnedVersion })
+  return rows
+}
+
+function stateActions(state, status) {
   var host = hostOf(serverURL(status))
   switch (state) {
   case "pairing":
@@ -168,6 +184,7 @@ if (typeof module !== "undefined") {
     codeExpiryText: codeExpiryText,
     modelRows: modelRows,
     engineSummary: engineSummary,
+    updateAvailable: updateAvailable,
     actions: actions
   }
 }
