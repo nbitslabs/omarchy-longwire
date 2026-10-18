@@ -35,6 +35,22 @@ curl -fsSL https://longwire.ai/downloads/$(jq -r .version release.json)/SHA256SU
 
 To pair with a self-hosted longwire instead, set `LONGWIRE_SERVER=https://your-server` when running `install-longwire.sh`.
 
+## Remove
+
+```
+omarchy plugin remove nbitslabs.longwire
+```
+
+removes the widget. The longwire daemon is separate; to remove it too:
+
+```
+longwire service uninstall
+rm ~/.local/bin/longwire
+rm -r ~/.config/longwire
+```
+
+Removing `~/.config/longwire` forgets this machine's credential; delete the machine from your [dashboard](https://longwire.ai/machines) as well.
+
 ## Using it
 
 - **Left click** opens the panel; **right click** does whatever the machine needs next (add it in the browser, or open the dashboard); **middle click** refreshes.
