@@ -49,7 +49,8 @@ echo -e "\nStarting longwire..."
 "$bin" service install --server "$server"
 
 # A machine that isn't on an account yet shows a pairing code within a few
-# seconds; open the link that adds it.
+# seconds; open the link that adds it (via open-pairing.sh, which keeps the
+# code off command lines).
 for _ in {1..15}; do
   pair_url="$("$bin" status --json | jq -r '.pairing.url // empty')"
   state="$("$bin" status --json | jq -r '.state // empty')"
@@ -58,7 +59,7 @@ for _ in {1..15}; do
 done
 echo
 "$bin" status
-if [[ -n ${pair_url:-} ]] && command -v omarchy-launch-browser >/dev/null; then
+if [[ -n ${pair_url:-} ]]; then
   echo -e "\nOpening longwire to add this machine to your account..."
-  omarchy-launch-browser "$pair_url" >/dev/null 2>&1 || true
+  bash "$plugin_dir/open-pairing.sh" >/dev/null 2>&1 || true
 fi

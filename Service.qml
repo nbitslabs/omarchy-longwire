@@ -50,13 +50,20 @@ Item {
     if (url) Qt.openUrlExternally(url)
   }
 
-  function openPairing() { openURL(pairingURL || (server + "/pair")) }
+  // The pairing link carries the code, so it goes through open-pairing.sh,
+  // which keeps it off command lines; the bare /pair page carries nothing.
+  function openPairing() {
+    if (pairingURL === "") openURL(server + "/pair")
+    else Quickshell.execDetached(["bash", localPath("open-pairing.sh")])
+  }
   function openChat() { openURL(server + "/chat") }
   function openDashboard() { openURL((status && status.dashboard_url) || (server + "/machines")) }
 
   function copyCode() {
-    if (pairingCode === "") return
-    Quickshell.execDetached(["wl-copy", pairingCode])
+    if (pairingCode === "" || copyProcess.running) return
+    copyProcess.text = pairingCode
+    copyProcess.stdinEnabled = true
+    copyProcess.running = true
     flash("Copied " + pairingCode)
   }
 
@@ -126,6 +133,20 @@ Item {
     running: false
     command: ["bash", "-c", "command -v longwire >/dev/null || [[ -x $HOME/.local/bin/longwire ]]"]
     onExited: function(exitCode) { root.installed = exitCode === 0 }
+  }
+
+  // wl-copy reads the code from stdin rather than its arguments, since other
+  // local users can read process command lines.
+  Process {
+    id: copyProcess
+    property string text: ""
+    running: false
+    stdinEnabled: true
+    command: ["wl-copy"]
+    onStarted: {
+      write(text)
+      stdinEnabled = false
+    }
   }
 
   Process {

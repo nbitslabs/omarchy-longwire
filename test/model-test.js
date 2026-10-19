@@ -121,6 +121,15 @@ t("release.json pins a release for every Linux architecture", () => {
   for (const a of ["longwire_linux_amd64", "longwire_linux_arm64"]) assert.match(rel.sha256[a], /^[0-9a-f]{64}$/, a)
 })
 
+t("the pairing code stays off command lines", () => {
+  const fs = require("fs")
+  const service = fs.readFileSync(path.join(__dirname, "..", "Service.qml"), "utf8")
+  for (const call of service.match(/execDetached\([^)]*\)|openURL\([^)]*\)|command: \[[^\]]*\]/g))
+    assert.ok(!/pairing(Code|URL)|\.text\b/.test(call), call)
+  const install = fs.readFileSync(path.join(__dirname, "..", "install-longwire.sh"), "utf8")
+  assert.ok(!/launch-browser "\$pair_url"/.test(install))
+})
+
 t("installs leave self-update to the daemon's config", () => {
   const script = require("fs").readFileSync(path.join(__dirname, "..", "install-longwire.sh"), "utf8")
   assert.ok(!script.includes("--no-auto-update"))

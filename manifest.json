@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "nbitslabs.longwire",
   "name": "longwire",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "nbitslabs",
   "license": "MIT",
   "description": "longwire connection status, pairing code, and shared models in the Omarchy bar.",

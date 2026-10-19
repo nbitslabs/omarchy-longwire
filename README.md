@@ -61,7 +61,7 @@ Removing `~/.config/longwire` forgets this machine's credential; delete the mach
 
 ## How it works
 
-The longwire daemon publishes its state to `$XDG_RUNTIME_DIR/longwire/status.json` whenever it changes ([format](https://github.com/nbitslabs/longwire#pairing-and-desktop-integrations)). The widget watches that directory and re-reads the file on change, so it never polls and starts no processes while idle. Opening links uses your default browser; copying uses `wl-copy`.
+The longwire daemon publishes its state to `$XDG_RUNTIME_DIR/longwire/status.json` whenever it changes ([format](https://github.com/nbitslabs/longwire#pairing-and-desktop-integrations)). The widget watches that directory and re-reads the file on change, so it never polls and starts no processes while idle. Opening links uses your default browser; copying uses `wl-copy`. The pairing code never goes on a command line, since other users on the machine can read those: `wl-copy` gets it on stdin, and the pairing link opens through [`open-pairing.sh`](open-pairing.sh), which hands the browser a private redirect page in the daemon's 0700 runtime directory rather than the URL.
 
 ## Development
 
