@@ -113,24 +113,17 @@ t("actions fit the state", () => {
   assert.ok(M.actions("pairing", pairing)[0].subtitle.includes("longwire.ai"))
 })
 
-t("offers an update only to daemons the plugin manages", () => {
-  const pinned = { ...connected, version: "v1", auto_update: false }
-  assert.ok(M.updateAvailable(pinned, "v2"))
-  assert.ok(!M.updateAvailable(pinned, "v1"))
-  assert.ok(!M.updateAvailable({ ...pinned, auto_update: true }, "v2"), "self-updating daemons update themselves")
-  assert.ok(!M.updateAvailable({ ...pinned, version: "dev" }, "v2"))
-  assert.ok(!M.updateAvailable(pinned, ""))
-  assert.deepStrictEqual(M.actions("connected", pinned, "v2").map((a) => a.id), ["openChat", "openDashboard", "update"])
-  assert.strictEqual(M.actions("connected", pinned, "v2")[2].subtitle, "v1 → v2")
-  assert.deepStrictEqual(M.actions("notInstalled", null, "v2").map((a) => a.id), ["install"])
-})
-
 t("release.json pins a release for every Linux architecture", () => {
   const rel = require(path.join(__dirname, "..", "release.json"))
   assert.match(rel.version, /^[A-Za-z0-9][A-Za-z0-9._+-]*$/)
   assert.strictEqual(rel.server, "https://longwire.ai")
   assert.strictEqual(rel.download_base, "https://longwire.ai/downloads")
   for (const a of ["longwire_linux_amd64", "longwire_linux_arm64"]) assert.match(rel.sha256[a], /^[0-9a-f]{64}$/, a)
+})
+
+t("installs leave self-update to the daemon's config", () => {
+  const script = require("fs").readFileSync(path.join(__dirname, "..", "install-longwire.sh"), "utf8")
+  assert.ok(!script.includes("--no-auto-update"))
 })
 
 console.log(`1..${n}`)

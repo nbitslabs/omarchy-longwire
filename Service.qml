@@ -30,9 +30,6 @@ Item {
   readonly property string pairingURL: status && status.pairing ? String(status.pairing.url || "") : ""
   readonly property var models: Model.modelRows(status)
   readonly property bool busy: startProcess.running || probeProcess.running
-  // The longwire release this plugin version installs (release.json).
-  property string pinnedVersion: ""
-  readonly property bool updateAvailable: Model.updateAvailable(status, pinnedVersion)
 
   function refresh() {
     statusFile.reload()
@@ -73,9 +70,9 @@ Item {
     return decodeURIComponent(String(Qt.resolvedUrl(name)).replace(/^file:\/\//, ""))
   }
 
-  // Installs, or updates to, the pinned release with the installer that
-  // ships in this plugin (install-longwire.sh), in a terminal so the
-  // download and checksum check are visible.
+  // Installs the pinned release with the installer that ships in this
+  // plugin (install-longwire.sh), in a terminal so the download and
+  // checksum check are visible.
   function install() {
     var script = "'" + localPath("install-longwire.sh").replace(/'/g, "'\\''") + "'"
     Quickshell.execDetached(["omarchy-launch-floating-terminal-with-presentation", "bash " + script])
@@ -87,7 +84,7 @@ Item {
     else if (actionId === "openChat") openChat()
     else if (actionId === "openDashboard") openDashboard()
     else if (actionId === "start") start()
-    else if (actionId === "install" || actionId === "update") install()
+    else if (actionId === "install") install()
   }
 
   function flash(text) {
@@ -99,14 +96,6 @@ Item {
     id: flashTimer
     interval: 2400
     onTriggered: root.actionStatus = ""
-  }
-
-  FileView {
-    path: root.localPath("release.json")
-    printErrors: false
-    onLoaded: {
-      try { root.pinnedVersion = String(JSON.parse(text()).version || "") } catch (e) { root.pinnedVersion = "" }
-    }
   }
 
   FileView {

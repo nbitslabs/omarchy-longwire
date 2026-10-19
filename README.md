@@ -22,10 +22,12 @@ If the longwire daemon isn't on this machine yet, the widget offers **Install lo
 
 1. downloads the exact longwire release pinned in [`release.json`](release.json) from `https://longwire.ai/downloads/<version>/`,
 2. checks it against the SHA-256 pinned there, and installs nothing if it doesn't match,
-3. installs it to `~/.local/bin/longwire` and starts it as a systemd user service, with self-update turned off,
+3. installs it to `~/.local/bin/longwire` and starts it as a systemd user service,
 4. opens the browser to add the machine to your account.
 
-So what runs on your machine is the release this plugin version was reviewed with, not whatever the server is serving that day. New longwire releases arrive as plugin updates that move the pin; after `omarchy plugin update`, the widget offers **Update longwire**, which runs the same script.
+So the first binary on your machine is the release this plugin version was reviewed with, not whatever the server is serving that day.
+
+After that the daemon keeps itself up to date, independently of plugin updates. It only installs a new release whose `SHA256SUMS` is signed with longwire's release key, which is compiled into the daemon and never kept on the server, so a compromised server can't push a build longwire didn't release. To manage updates yourself instead, set `"auto_update": false` in `~/.config/longwire/config.json` and run `systemctl --user restart longwire`; `longwire status` shows whether updates are on.
 
 Every longwire release is also published with a signed `SHA256SUMS` alongside the binaries, so you can check a pin yourself:
 

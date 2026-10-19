@@ -1,13 +1,12 @@
 #!/bin/bash
-# Installs the longwire daemon release pinned in release.json, or updates to
-# it, and starts it as a systemd user service. The widget runs this for
-# "Install longwire" and "Update longwire".
+# Installs the longwire daemon release pinned in release.json and starts it
+# as a systemd user service. The widget runs this for "Install longwire".
 #
 # Nothing here comes from the network except the binary itself, and that
 # must match the SHA-256 pinned in release.json before it is installed — so
 # what gets installed is exactly the release this plugin version was
-# reviewed with. Self-update is turned off for the same reason: newer
-# releases arrive as plugin updates, with new pins.
+# reviewed with. From then on the daemon keeps itself up to date, and only
+# installs releases signed with longwire's release key (see the README).
 #
 # LONGWIRE_SERVER pairs the machine with a self-hosted longwire instead of
 # longwire.ai; the binary is the same either way.
@@ -45,8 +44,9 @@ bin="$HOME/.local/bin/longwire"
 install -D -m 755 "$tmp" "$bin"
 
 echo -e "\nStarting longwire..."
-# Restarts a running daemon onto the new binary; a paired machine stays paired.
-"$bin" service install --server "$server" --no-auto-update
+# Restarts a running daemon onto the new binary; a paired machine stays paired,
+# and an auto_update setting already in its config is kept.
+"$bin" service install --server "$server"
 
 # A machine that isn't on an account yet shows a pairing code within a few
 # seconds; open the link that adds it.
